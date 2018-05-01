@@ -11,7 +11,9 @@
 
 丢弃修改：git checkout --<file>
 
-删除文件：git rm <file>
+删除文件：git rm -r --cached <file>
+
+（ached不会把本地的文件夹删除）
 
 关联远程仓库：git remote add origin git@github.com:用户名/仓库名.git
 
