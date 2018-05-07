@@ -20,9 +20,53 @@
 
 ① 实际上，一切为简化边界条件而引入的附加结点(元素)均可称为哨兵。
 
-【例】单链表中的头结点实际上是一个哨兵
+【例如】单链表中的头结点实际上是一个哨兵
 
 ②引入哨兵后使得测试查找循环条件的时间大约减少了一半，所以对于记录数较大的文件节约的时间就相当可观。对于类似于排序这样使用频率非常高的算法，要尽可能地减少其运行时间。
+
+```java
+package sort;
+
+public class InsertSort {
+
+	public static void main(String[] args) {
+		
+		int[] array = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+		// 因为第一个已经排好序了
+		for (int i = 1; i < array.length; i++) {
+
+//			for (int j = i; j > 0; j--) {
+//				if (array[j] < array[j - 1]) {
+//					int temp = array[j];
+//					array[j] = array[j - 1];
+//					array[j - 1] = temp;
+//				} else {
+//					break;
+//				}
+//			}
+			// 优化的插入排序
+
+			int k = array[i];
+			int j;//保存k应该插入的位置
+			for (j = i; j > 0; j--) {
+				if (array[j - 1] > k) {
+					array[j] = array[j - 1];
+				} else {
+					break;
+				}
+			}
+			array[j] = k;
+		}
+		//打印数组
+		for (int i : array) {
+			System.out.print(" " + i);
+		}
+	}
+}
+
+```
+
+
 
 二分法插入排序：
 
@@ -42,7 +86,7 @@
 
 我们来看下希尔排序的基本步骤，在此我们选择增量gap=length/2，缩小增量继续以gap = gap/2的方式，这种增量选择我们可以用一个序列来表示，{n/2,(n/2)/2...1}，称为增量序列。
 
-因为直接插入排序在元素基本有序的情况下（接近最好情况），效率是很高的。一般我们在分割子序列是以5，3，1来分割。考试一般不会给太多数字，所以只需要将所有数字的个数除以2，即可得到组数d          d=n/2
+因为直接插入排序在元素基本有序的情况下（接近最好情况），效率是很高的。一般我们在分割子序列是以5，3，1来分割。所以只需要将所有数字的个数除以2，即可得到组数d，即d=n/2
 
 看下图实例：
 
@@ -84,6 +128,41 @@ l  以此类推，直到所有元素均排序完毕。
 
 ![img](assets/clip_image006.png)
 
+```java
+package sort;
+
+public class SelectSort {
+
+	public static void main(String[] args) {
+		
+		int[] array = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+		for (int i = 0; i < array.length; i++) {
+
+			int minIndex = i;
+
+			for (int j = i + 1; j < array.length; j++) {
+				if (array[j] < array[minIndex]) {
+					minIndex = j;
+				}
+			}
+			if (minIndex != i) {
+				int temp = array[minIndex];
+				array[minIndex] = array[i];
+				array[i] = temp;
+			}
+		}
+        //打印数组
+		for (int i : array) {
+			System.out.print(" " + i);
+		}
+	}
+
+}
+
+```
+
+
+
 冒泡排序：
 
 基本思想：对相邻的元素进行两两比较，顺序相反则进行交换，这样，每一趟会将最小或最大的元素“浮”到顶端，最终达到完全有序。
@@ -92,11 +171,40 @@ l  以此类推，直到所有元素均排序完毕。
 
 冒泡排序算法的时间复杂度为O(n2),是一种稳定的排序算法。
 
+```java
+package sort;
+
+public class BubbleSort {
+
+	public static void main(String[] args) {	
+		int[] array = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+		//int[] array = SortUtils.randomArray(100);
+		for(int i=0;i< array.length-1;i++) {
+			for(int j = 0;j<array.length-1-i;j++) {
+				if (array[j]>array[j+1]) {
+					int temp = array[j];
+					array[j] = array[j+1];
+					array[j+1] = temp;
+				}
+			}
+		}
+        //打印数组
+		for (int i : array) {
+			System.out.print(" " + i);
+		}	
+	}
+}
+
+
+```
+
+
+
 快速排序：
 
 基本思想：当前待排序列分成两个部分、一个值。一个值：就是选定出一个值作为被比较的元素。两个部分：所有比该被选定元素大的部分都去该元素的右边，所有比被选定元素小的部分都去该元素的左边。这样我们就确定了该元素在这个待排序列中的位置，其实也就是我们已经将这个元素“排好了”。
 
-具体过程：（过程可能有点多，但是一定要慢慢看，我相信你可以搞定的，这个是我从网上找的，和郝斌讲的一样，很容易理解，所以全部都复制过来了，一个字都没删）
+具体过程：
 
 我们选定一个被比较的元素，一般都是选第一个，即数组中第一个元素作为val，然后我们给出两个指针，一个指向最左边的元素，我们叫做low，一个指向最右边的元素，我们叫做high，即如下图所示：
 
