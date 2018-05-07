@@ -186,7 +186,7 @@ a.将堆顶元素9和末尾元素4进行交换
 
  
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218153110495-1280388728.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image024.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218153110495-1280388728.png](assets/clip_image024-1525693712289.png)
 
 b.重新调整结构，使其继续满足堆定义
 
