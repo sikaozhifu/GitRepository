@@ -6,7 +6,7 @@
 
 图解：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image001.png)
+![img](assets/clip_image001.png)
 
 算法中引进的附加记录R[0]称监视哨或哨兵(Sentinel)。
 
@@ -32,7 +32,7 @@
 
 图解：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
+![img](assets/clip_image002.jpg)
 
 希尔排序：
 
@@ -46,11 +46,11 @@
 
 看下图实例：
 
-![http://images2015.cnblogs.com/blog/1024555/201611/1024555-20161128110416068-1421707828.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image003.png)
+![http://images2015.cnblogs.com/blog/1024555/201611/1024555-20161128110416068-1421707828.png](assets/clip_image003.png)
 
 原始数据：312,126,272,226,28,165,123
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image004.jpg)
+![img](assets/clip_image004.jpg)
 
 d=n/2             即d=7/2=3时的分组：
 
@@ -58,7 +58,7 @@ d=n/2             即d=7/2=3时的分组：
 
 注：123这个数字换了两次，先换到第4个位置，然后又换到第1个位置
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image005.jpg)
+![img](assets/clip_image005.jpg)
 
 d=d/2          即d=3/2=1时的分组：
 
@@ -82,13 +82,13 @@ l  以此类推，直到所有元素均排序完毕。
 
 算法图解：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png)
+![img](assets/clip_image006.png)
 
 冒泡排序：
 
 基本思想：对相邻的元素进行两两比较，顺序相反则进行交换，这样，每一趟会将最小或最大的元素“浮”到顶端，最终达到完全有序。
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image007.png)
+![img](assets/clip_image007.png)
 
 冒泡排序算法的时间复杂度为O(n2),是一种稳定的排序算法。
 
@@ -100,17 +100,17 @@ l  以此类推，直到所有元素均排序完毕。
 
 我们选定一个被比较的元素，一般都是选第一个，即数组中第一个元素作为val，然后我们给出两个指针，一个指向最左边的元素，我们叫做low，一个指向最右边的元素，我们叫做high，即如下图所示：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image013.jpg)
+![img](assets/clip_image013.jpg)
 
 一次快速排序就是有hight开始比较，因为我们是升序排列，所以，当hight指向的元素比val大的时候，hight所指向的元素的位置相对于val不应该发生改变，然后hight-1，即我们hight的位置向左移动一位，然后在比较hight元素和val，直到找到一个hight元素比val小，我们就将hight所指向的元素赋给low所指向的元素，记住，此时hight不动。然后我们去移动low元素，当low元素比val小的时候，low元素的位置相对于val不应该发生改变（当前为升序排列，小的就应该在左边），然后low+1,即low的位置向右移动一位，然后在继续比较low元素和val，直到找到一个low元素比val大，我们就将low所指向的元素赋给hight位置，记住，此时low不动，然后去移动hight元素，以此类推，直到low和hight的位置重合，即我们当前已经没有任何没有比较过的元素，即此位置就是val应该在的位置。一次快速排序结束。如下图所示：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image014.jpg)
+![img](assets/clip_image014.jpg)
 
 一次快速排序完成后，我们只是找到了第一个元素的位置，所以我们采用递归的方法将左边的元素和右边的元素都采用快速排序进行对被选定元素的位置排序，直到整个序列只剩下一个元素，我们的快速排序就完成了。
 
 看完以后做一下这道题：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image015.jpg)
+![img](assets/clip_image015.jpg)
 
 答案选C，这道题很棒，要是做对的话，说明就会快速排序了。
 
@@ -122,7 +122,7 @@ l  以此类推，直到所有元素均排序完毕。
 
 图解：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image016.jpg)
+![img](assets/clip_image016.jpg)
 
 堆排序：
 
@@ -130,13 +130,13 @@ l  以此类推，直到所有元素均排序完毕。
 
 堆排序是利用堆这种数据结构而设计的一种排序算法，堆排序是一种选择排序，它的最坏，最好，平均时间复杂度均为O(nlogn)，它也是不稳定排序。首先简单了解下堆结构。
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217182750011-675658660.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image017.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217182750011-675658660.png](assets/clip_image017.png)
 
 堆是具有以下性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆；或者每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆。如下图：
 
 同时，我们对堆中的结点按层进行编号，将这种逻辑结构映射到数组中就是下面这个样子
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217182857323-2092264199.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image018.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217182857323-2092264199.png](assets/clip_image018.png)
 
 该数组从逻辑上讲就是一个堆结构，我们用简单的公式来描述一下堆的定义就是：
 
@@ -154,11 +154,11 @@ ok，了解了这些定义。接下来，我们来看看堆排序的基本思想
 
 a.假设给定无序序列结构如下
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217192038651-934327647.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image019.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217192038651-934327647.png](assets/clip_image019.png)
 
  
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217192209433-270379236.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image020.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217192209433-270379236.png](assets/clip_image020.png)
 
 2.此时我们从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点arr.length/2-1=5/2-1=1，也就是下面的6结点），从左至右，从下至上进行调整。
 
@@ -166,11 +166,11 @@ a.假设给定无序序列结构如下
 
 4.找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换。
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217192854636-1823585260.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image021.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217192854636-1823585260.png](assets/clip_image021.png)
 
  
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217193347886-1142194411.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image022.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217193347886-1142194411.png](assets/clip_image022.png)
 
 这时，交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。
 
@@ -180,7 +180,7 @@ a.假设给定无序序列结构如下
 
 步骤二将堆顶元素与末尾元素进行交换，使末尾元素最大。然后继续调整堆，再将堆顶元素与末尾元素交换，得到第二大元素。如此反复进行交换、重建、交换。
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217194207620-1455153342.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image023.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161217194207620-1455153342.png](assets/clip_image023.png)
 
 a.将堆顶元素9和末尾元素4进行交换
 
@@ -192,7 +192,7 @@ b.重新调整结构，使其继续满足堆定义
 
  
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218152929339-1114983222.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image025.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218152929339-1114983222.png](assets/clip_image025.png)
 
 c.再将堆顶元素8与末尾元素5进行交换，得到第二大元素8.
 
@@ -200,7 +200,7 @@ c.再将堆顶元素8与末尾元素5进行交换，得到第二大元素8.
 
 后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序
 
-![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218152348229-935654830.png](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image026.png)
+![http://images2015.cnblogs.com/blog/1024555/201612/1024555-20161218152348229-935654830.png](assets/clip_image026.png)
 
 再简单总结下堆排序的基本思路：
 
@@ -212,7 +212,7 @@ c.重新调整结构，使其满足堆定义，然后继续交换堆顶元素与
 
 各个排序算法的比较：
 
-![img](file:///C:/Users/GUANRI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image027.png)
+![img](assets/clip_image027.png)
 
 一些排序概念：
 
