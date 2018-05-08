@@ -222,6 +222,60 @@ public class BubbleSort {
 
 答案选C，这道题很棒，要是做对的话，说明就会快速排序了。
 
+```java
+package sort;
+
+public class QuickSort {
+
+	public static void main(String[] args) {
+		int[] array = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+		quickSort(array);
+		for (int i : array) {
+			System.out.print(" "+i);
+		}
+	}
+
+	//封装quickSort函数
+	private static void quickSort(int[] array) {
+		
+		quickSort(array,0,array.length-1);
+	}
+
+	//快速排序
+	private static void quickSort(int[] array, int low, int high) {
+		
+		int pos;//元素应该所在位置
+		//定义递归出口
+		if ( low >= high) {
+			return;
+		}
+		pos = findPos(array,low,high);
+		quickSort(array, low, pos-1);
+		quickSort(array, pos+1, high);
+	}
+
+	//寻找pos的所在位置
+	private static int findPos(int[] array, int low, int high) {
+		
+		int val = array[low];//暂时存放要排的元素
+		while( low < high) {
+			while(low < high && array[high] >= val ) {
+				--high;
+			}
+			array[low] = array[high];
+			while( low < high && array[low] <= val ) {
+				++low;
+			}
+			array[high] = array[low];
+		}
+		array[low] = val;
+		return low;
+	}
+}
+```
+
+
+
 归并排序：
 
 可以参考 [图解排序算法(四)之归并排序](http://www.cnblogs.com/chengxiao/p/6194356.html)
