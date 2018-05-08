@@ -280,6 +280,79 @@ public class QuickSort {
 
 可以参考 [图解排序算法(四)之归并排序](http://www.cnblogs.com/chengxiao/p/6194356.html)
 
+自顶向下思想：
+
+即8--> 4 -->2 -->1
+
+```java
+package sort;
+
+public class MergeSort {
+
+	public static void main(String[] args) {
+		
+		//int[] array = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+		int[] array = SortUtils.randomArray(500);
+		mergeSort(array);
+		//输出数组:
+		for (int i : array) {
+			System.out.print(" "+i);
+		}
+	}
+	
+	public static void mergeSort(int[] array) {
+		
+		mergeSort(array,0,array.length-1);
+	}
+	
+	private static void mergeSort(int[] array,int l,int r) {
+		
+		//设置递归出口
+		if (l>=r) {
+			return;
+		}
+		int mid = (r + l)/2;
+		mergeSort(array, l, mid);
+		mergeSort(array, mid+1, r);
+		if (array[mid]>array[mid+1]) {
+			merge(array,l,mid,r);
+		}
+	}
+
+	private static void merge(int[] array, int l, int mid, int r) {
+		//定义一个临时数组
+		int[] aux = new int[r-l+1];
+		//把数组的元素赋值
+		for(int i = l;i <= r; i ++ ) {
+			aux[i - l] = array[i];
+		}
+		int i = l;//左指针
+		int j = mid + 1;//右指针
+		
+		for(int k = l;k <= r;k ++ ) {
+			//考虑左右指针越界
+			if (i > mid) {
+				array[k] = aux[j - l];
+				j ++;
+			}else if (j > r) {
+				array[k] = aux[i - l];
+				i ++;
+			}else if (aux[i - l] < aux[j - l]) {
+				array[k] = aux[i - l];
+				i ++;
+			}else {
+				array[k] = aux[j - l];
+				j ++;
+			}
+		}
+		
+	}
+}
+
+```
+
+下边为自底向上的思想：
+
 基本原理：假设初始序列含有 n个记录，则可看成是 n个有序的子序列；每个子序列的长度为 1，然后两两归并，得到 én/2ù 个长度为 2 或 1 有序的子序列，再两两归并，... 如此重复，直至得到一个长度为 n 的有序序列为止。
 
 归并就是将两个或两个以上的有序数据序列合并成一个有序数据序列的过程。
