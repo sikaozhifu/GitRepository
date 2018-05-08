@@ -259,7 +259,7 @@ public class QuickSort {
 		
 		int val = array[low];//暂时存放要排的元素
 		while( low < high) {
-			while(low < high && array[high] >= val ) {
+			while( low < high && array[high] >= val ) {//low < high 不加这个条件会报数组越界ArrayIndexOutOfBoundsException
 				--high;
 			}
 			array[low] = array[high];
@@ -272,6 +272,7 @@ public class QuickSort {
 		return low;
 	}
 }
+
 ```
 
 
