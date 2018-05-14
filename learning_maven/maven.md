@@ -1,6 +1,8 @@
 #### 常用命令：
 
-mvn 	-v 查看maven版本
+mvn
+
+​		-v 查看maven版本
 
 ​		compile 编译
 
