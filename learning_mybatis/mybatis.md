@@ -142,7 +142,7 @@
 
   #### Mybatis和Spring整合：
 
-  	* applicationContext.xml
+  * applicationContext.xml
 
   ```xml
   <?xml version="1.0" encoding="UTF-8"?>
@@ -244,3 +244,4 @@
   ```
 
   ​
+
