@@ -15,8 +15,8 @@
   <servlet-mapping>
   	<servlet-name>springmvc</servlet-name>
       <!-- 
-		/表示过滤所有包括jsp、css等
-		/*表示除了jsp，剩下的过滤
+		/*表示过滤所有包括jsp、css等
+		/表示除了jsp，剩下的过滤
 		*.action表示过滤后缀名
 -->
   	<url-pattern>*.action</url-pattern>
