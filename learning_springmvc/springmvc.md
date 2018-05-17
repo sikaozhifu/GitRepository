@@ -154,4 +154,123 @@
   * springmvc是基于方法开发(一个url对应一个方法)，请求参数传递到方法的形参，可以设计为单例或多例(建议单例)，struts2是基于类开发，传递参数是通过类的属性，只能设计为多例。
   * Struts采用值栈存储请求和响应的数据，通过OGNL存取数据， springmvc通过参数解析器是将request请求内容解析，并给方法形参赋值，将数据和视图封装成ModelAndView对象，最后又将ModelAndView中的模型数据通过request域传输到页面。Jsp视图解析器默认使用jstl。
 
+  #### Controller返回值
+
+   * ModelAndView
+
+   * void
+
+   * String
+
+     数据于视图分离，即解耦思想。
+
+     ```java
+     return "redirect:/item/itemList.action";
+     //return "forward:/item/itemList.action";
+     ```
+
+  #### 上传文件：
+
+   * 导入jar包；
+   * 配置上传解析器
+
+  ```xml
+  <!-- 配置上传文件实现类 -->
+  	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  		<property name="maxUploadSize" value="50000" />
+  	</bean>
+  ```
+
+  * 方法：
+
+  ```java
+  @RequestMapping(value ="updateitem.action")
+  	public String updateItem(Items items,MultipartFile pictureFile) throws Exception {
+  		//文件的名字
+  		String name = UUID.randomUUID().toString().replaceAll("-", "");
+  		//扩展名
+  		String extension = FilenameUtils.getExtension(pictureFile.getOriginalFilename());
+  		pictureFile.transferTo(new File("C:\\Users\\guanripeng\\Desktop\\upload"+name+"."+extension));
+  		
+  		items.setPic(name+"."+extension);
+  		
+  		itemService.updateItemById(items);
+  		//重定向
+  		
+  //		return "redirect:/item/itemList.action";
+  		return "redirect:/itemEdit.action"+items.getId();
+  	}
+  ```
+
+  #### json数据交互：
+
+  @RequestBody注解用于读取http请求的内容(字符串)，通过springmvc提供的HttpMessageConverter接口将读到的内容（json数据）转换为java对象并绑定到Controller方法的参数上。
+
+  ```java
+  /**
+   * 测试json的交互
+   * @param item
+   * @return
+   */
+  @RequestMapping("testJson")
+  // @ResponseBody
+  public @ResponseBody Item testJson(@RequestBody Item item) {
+  	return item;
+  }
+  ```
+
+  #### 从URL上获取参数：
+
+   * 使用注解@RequestMapping("item/{id}")声明请求的url{xxx}叫做占位符，请求的URL可以是“item /1”或“item/2”
+  * 使用(@PathVariable() Integer id)获取url上的数据
+
+  ```java
+  /**
+   * 使用RESTful风格开发接口，实现根据id查询商品
+   * 
+   * @param id
+   * @return
+   */
+  @RequestMapping("item/{id}")
+  @ResponseBody
+  public Item queryItemById(@PathVariable() Integer id) {
+  	Item item = this.itemService.queryItemById(id);
+  	return item;
+  }
+
+  ```
+
+  #### 拦截器：
+
+  自定义拦截器，实现HandlerInterceptor接口
+
+  在springmvc.xml中配置拦截器
+
+  ```xml
+  <!-- 配置拦截器 -->
+  <mvc:interceptors>
+  	<mvc:interceptor>
+  		<!-- 所有的请求都进入拦截器 -->
+  		<mvc:mapping path="/**" />
+  		<!-- 配置具体的拦截器 -->
+  		<bean class="cn.itcast.ssm.interceptor.HandlerInterceptor1" />
+  	</mvc:interceptor>
+  	<mvc:interceptor>
+  		<!-- 所有的请求都进入拦截器 -->
+  		<mvc:mapping path="/**" />
+  		<!-- 配置具体的拦截器 -->
+  		<bean class="cn.itcast.ssm.interceptor.HandlerInterceptor2" />
+  	</mvc:interceptor>
+  </mvc:interceptors>
+
+  ```
+
+  #### 拦截器处理流程：
+
+   * preHandle按拦截器定义顺序调用
+  * postHandler按拦截器定义逆序调用
+  * afterCompletion按拦截器定义逆序调用
+  * postHandler在拦截器链内所有拦截器返成功调用
+  * afterCompletion只有preHandle返回true才调用
+
   ​
