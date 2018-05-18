@@ -28,6 +28,41 @@
 
 * "=="和equals方法的区别：
 
-  ==用来判断两个变量之间的值是否相等。基本数据类型直接比较值，引用数据类型要比较对应的引用的内存首地址；
+  ==用来判断两个变量之间的值是否相等。基本数据类型直接比较值（包装类型会触发自动拆箱的过程），引用数据类型要比较对应的引用的内存首地址（对于包装类型，equals方法并不会进行类型转换）；
 
   equals用来比较两个对象的某些特征是否一样。举例：两个Person对象的名字(name)是否一样，若一样，则相等。
+
+  ```java
+  public static void main(String[] args) {
+
+  		Integer a = 1;
+  		Integer b = 2;
+  		Integer c = 3;
+  		Integer d = 3;
+  		Integer e = 321;
+  		Integer f = 321;
+  		Long g = 3L;
+  		Long h = 2L;
+
+  		System.out.println(c == d);
+  		System.out.println(e == f);
+  		System.out.println(c == (a + b));
+  		System.out.println(c.equals(a + b));
+  		System.out.println(g == (a + b));
+  		System.out.println(g.equals(a + b));
+  		System.out.println(g.equals(a + h));
+  	}
+  ```
+
+  ```java
+  //输出结果
+  true
+  false
+  true
+  true
+  true
+  false
+  true
+  ```
+
+* ​
