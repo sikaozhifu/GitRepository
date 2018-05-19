@@ -65,4 +65,20 @@
   true
   ```
 
+* String和StringBuilder的区别，StringBuffer和StringBuilder的区别
+
+  String是内容不可变的字符串，底层使用了一个不可变的字符数组（private final char []）
+
+  而StringBuilder和StringBuffer采用可变字符数组（char [] value）
+
+  拼接字符串：
+
+  String进行拼接，String c= "a" + "b";
+
+  StringBuilder或者StringBuffer，StringBuilder sb = new StringBuilder();
+
+  sb.append("a");
+
+  StringBuilder是线程不安全的，效率较高。而StringBuffer是线程安全的，效率较低。（内部采用synchronized来修饰append方法）
+
 * ​
