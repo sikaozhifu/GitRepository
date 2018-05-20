@@ -81,4 +81,22 @@
 
   StringBuilder是线程不安全的，效率较高。而StringBuffer是线程安全的，效率较低。（内部采用synchronized来修饰append方法）
 
-* ​
+* java中的集合
+
+  Collection和Map
+
+  List是有序的，可以重复；
+
+  Set是无序的，不可以重复；根据equals和hashcode判断。
+
+* ArrayList和LinkedList的区别：
+
+  ArrayList使用数组，LinkedList使用的是链表。
+
+  数组查询比较快（有索引），插入和修改比较慢，数组在内存中是一块连续的内存，如果插入或删除，需要移动内存。
+
+  链表查询比较慢（需要从头部开始），插入和修改比较快（只需改变引用指向即可），链表不要求内存连续。
+
+  ArrayList使用在查询比较多，而插入和删除比较少。而LinkedList相反。
+
+  ​
