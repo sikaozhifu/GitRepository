@@ -97,7 +97,7 @@ java中的绑定：
 
 这几种类加载器的层次关系：
 
-![img](file:///C:\Users\guanripeng\AppData\Roaming\Tencent\Users\1179979738\QQ\WinTemp\RichOle\2EXNJBGDP4LNN~92%]1CZT0.png)
+![](assets/classLoador.png)
 
 这种层次关系称为类加载器的双亲（父类）委派模型。这种父子关系并不是通过继承关系来实现的，而是使用组合关系来复用付加载器中的代码。
 
@@ -196,7 +196,6 @@ java中的绑定：
 
   ![https://img-blog.csdn.net/20140110124356484](assets/clip_image002-1526899088804.png)
 
-   
 
   ![https://img-blog.csdn.net/20140110123602734](assets/clip_image003-1526899088804.png)
 
