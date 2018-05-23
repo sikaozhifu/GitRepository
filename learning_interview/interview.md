@@ -99,4 +99,123 @@
 
   ArrayList使用在查询比较多，而插入和删除比较少。而LinkedList相反。
 
+* HashMap和HashTable的区别：
+
+  HashMap和HashTable都使用哈希表来存储键值对。在数据结构上是基本相同的，都创建了一个继承自Map.Entry的私有的内部类Entry，每一个Entry对象表示存储在哈希表中的一个键值对。
+
+  Entry对象唯一表示一个键值对，有四个属性：
+
+  -K key 键对象
+  -V value 值对象
+  -int hash 键对象的hash值
+  -Entry entry 指向链表中下一个Entry对象，可为null，表示当前Entry对象在链表尾部
+
+  初始容量大小和每次扩充容量大小的不同：
+
+  ```java
+  以下代码及注释来自java.util.HashTable
+   
+  // 哈希表默认初始大小为11
+  public Hashtable() {
+      this(11, 0.75f);
+  }
+   
+  protected void rehash() {
+      int oldCapacity = table.length;
+      Entry<K,V>[] oldMap = table;
+   
+      // 每次扩容为原来的2n+1
+      int newCapacity = (oldCapacity << 1) + 1;
+      // ...
+  }
+   
+   
+  以下代码及注释来自java.util.HashMap
+   
+  // 哈希表默认初始大小为2^4=16
+  static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
+   
+  void addEntry(int hash, K key, V value, int bucketIndex) {
+      // 每次扩充为原来的2n 
+      if ((size >= threshold) && (null != table[bucketIndex])) {
+         resize(2 * table.length);
+  }
+  ```
+
+  HashTable默认的初始大小为11，之后每次扩充为原来的2n+1。HashMap默认的初始化大小为16，之后每次扩充为原来的2倍。
+
+  如果在创建时给定了初始化大小，那么HashTable会直接使用你给定的大小，而HashMap会将其扩充为2的幂次方大小。
+
   ​
+
+  HashMap可以把null作为key或者value，而HashTable是不可以的；
+
+  ```java
+  以下代码及注释来自java.util.HashTable
+   
+  public synchronized V put(K key, V value) {
+   
+      // 如果value为null，抛出NullPointerException
+      if (value == null) {
+          throw new NullPointerException();
+      }
+   
+      // 如果key为null，在调用key.hashCode()时抛出NullPointerException
+   
+      // ...
+  }
+   
+   
+  以下代码及注释来自java.util.HasMap
+   
+  public V put(K key, V value) {
+      if (table == EMPTY_TABLE) {
+          inflateTable(threshold);
+      }
+      // 当key为null时，调用putForNullKey特殊处理
+      if (key == null)
+          return putForNullKey(value);
+      // ...
+  }
+   
+  private V putForNullKey(V value) {
+      // key为null时，放到table[0]也就是第0个bucket中
+      for (Entry<K,V> e = table[0]; e != null; e = e.next) {
+          if (e.key == null) {
+              V oldValue = e.value;
+              e.value = value;
+              e.recordAccess(this);
+              return oldValue;
+          }
+      }
+      modCount++;
+      addEntry(0, null, value, 0);
+      return null;
+  }
+  ```
+
+  HashMap是线程不安全的，效率较高，HashTable是线程安全的，效率较低；
+
+  ```java
+  以下代码及注释来自java.util.HashTable
+   
+  public synchronized V get(Object key) {
+      Entry tab[] = table;
+      int hash = hash(key);
+      int index = (hash & 0x7FFFFFFF) % tab.length;
+      for (Entry<K,V> e = tab[index] ; e != null ; e = e.next) {
+          if ((e.hash == hash) && e.key.equals(key)) {
+              return e.value;
+          }
+      }
+      return null;
+  }
+   
+  public Set<K> keySet() {
+      if (keySet == null)
+          keySet = Collections.synchronizedSet(new KeySet(), this);
+      return keySet;
+  }
+  ```
+
+* ​
