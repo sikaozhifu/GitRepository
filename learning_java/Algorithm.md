@@ -236,7 +236,7 @@ public class QuickSort {
 	}
 
 	//封装quickSort函数
-	private static void quickSort(int[] array) {
+	public static void quickSort(int[] array) {
 		
 		quickSort(array,0,array.length-1);
 	}
