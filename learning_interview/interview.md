@@ -1057,4 +1057,8 @@
 
   **由于扩容是按照2的幂次方进行的，所以扩展前在同一个桶中的元素，现在要么还是在原来的序号的桶里，或者就是原来的序号再加上一个2的幂次方，就这两种选择。**
 
+  JDK6、7、8分别对ConcurrentHashMap的实现方式：
+
+  [ConcurrentHashMap总结]: https://my.oschina.net/hosee/blog/675884
+
   ​
