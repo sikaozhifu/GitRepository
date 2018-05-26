@@ -1059,6 +1059,6 @@
 
   JDK6、7、8分别对ConcurrentHashMap的实现方式：
 
-  []: https://my.oschina.net/hosee/blog/675884	"ConcurrentHashMap总结"
+  [ConcurrentHashMap总结]: https://my.oschina.net/hosee/blog/675884	"ConcurrentHashMap总结"
 
-* ​
+* [1]: http://google.com/	"Google"
