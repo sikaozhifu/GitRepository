@@ -224,7 +224,7 @@
 
   若不确定文件的类型（如可能有图片、音频等），使用字节流，若确定文件的类型是文本，使用字符流。
 
-* HashMap的实现原理：
+* **HashMap的实现原理：**
 
   哈希表：哈希表是一种根据关键码去寻找值的数据映射结构。就像字典那样。
 
@@ -502,4 +502,559 @@
 
   如果使用自定义的对象作为键，必须重写equals()和hashCode()方法。
 
-* ​
+* **ConcurrentHashMap实现原理：**
+
+  ConcurrentHashMap 类中包含两个静态内部类 HashEntry 和 Segment。HashEntry 用来封装映射表的键 / 值对；
+
+  Segment 用来充当锁的角色，每个 Segment 对象守护整个散列映射表的若干个桶。每个桶是由若干个 HashEntry 对象链接起来的链表。
+
+  一个 ConcurrentHashMap 实例中包含由若干个 Segment 对象组成的数组。
+
+  HashEntry类：
+
+  HashEntry 用来封装散列映射表中的键值对。在 HashEntry 类中，key，hash 和 next 域都被声明为 final 型，value 域被声明为 volatile 型。
+
+  ```java
+  static final class HashEntry<K,V> { 
+         final K key;                       // 声明 key 为 final 型
+         final int hash;                   // 声明 hash 值为 final 型 
+         volatile V value;                 // 声明 value 为 volatile 型
+         final HashEntry<K,V> next;      // 声明 next 为 final 型 
+   
+         HashEntry(K key, int hash, HashEntry<K,V> next, V value) { 
+             this.key = key; 
+             this.hash = hash; 
+             this.next = next; 
+             this.value = value; 
+         } 
+  }
+  ```
+
+  在 ConcurrentHashMap 中，在散列时如果产生“碰撞”，将采用“分离链接法”来处理“碰撞”：把“碰撞”的 HashEntry 对象链接成一个链表。
+
+  由于 HashEntry 的 next 域为 final 型，所以新节点只能在链表的表头处插入。
+
+  在一个空桶中插入三个HashEntry（A、B、C）后桶的结构：
+
+  ![](assets/桶的结构示意图.jpg)
+
+  特别注意：由于只能在表头插入，所以链表中的节点的顺序和插入的顺序相反。
+
+  Segment类：
+
+  Segment 类继承于 ReentrantLock 类，从而使得 Segment 对象能充当锁的角色。每个 Segment 对象用来守护其（成员对象 table 中）包含的若干个桶。
+
+  table 是一个由 HashEntry 对象组成的数组。table 数组的每一个数组成员就是散列映射表的一个桶。
+
+  ```java
+  static final class Segment<K,V> extends ReentrantLock implements Serializable { 
+         /** 
+          * 在本 segment 范围内，包含的 HashEntry 元素的个数这样当需要更新计数器时，不用锁定整个 ConcurrentHashMap
+          * 该变量被声明为 volatile 型
+          */ 
+         transient volatile int count; 
+   
+         /** 
+          * table 被更新的次数
+          */ 
+         transient int modCount; 
+   
+         /** 
+          * 当 table 中包含的 HashEntry 元素的个数超过本变量值时，触发 table 的再散列
+          */ 
+         transient int threshold; 
+   
+         /** 
+          * table 是由 HashEntry 对象组成的数组
+          * 如果散列时发生碰撞，碰撞的 HashEntry 对象就以链表的形式链接成一个链表
+          * table 数组的数组成员代表散列映射表的一个桶
+          * 每个 table 守护整个 ConcurrentHashMap 包含桶总数的一部分
+          * 如果并发级别为 16，table 则守护 ConcurrentHashMap 包含的桶总数的 1/16 
+          */ 
+         transient volatile HashEntry<K,V>[] table; 
+   
+         /** 
+          * 装载因子
+          */ 
+         final float loadFactor; 
+   
+         Segment(int initialCapacity, float lf) { 
+             loadFactor = lf; 
+             setTable(HashEntry.<K,V>newArray(initialCapacity)); 
+         } 
+   
+         /** 
+          * 设置 table 引用到这个新生成的 HashEntry 数组
+          * 只能在持有锁或构造函数中调用本方法
+          */ 
+         void setTable(HashEntry<K,V>[] newTable) { 
+             // 计算临界阀值为新数组的长度与装载因子的乘积
+             threshold = (int)(newTable.length * loadFactor); 
+             table = newTable; 
+         } 
+   
+         /** 
+          * 根据 key 的散列值，找到 table 中对应的那个桶（table 数组的某个数组成员）
+          */ 
+         HashEntry<K,V> getFirst(int hash) { 
+             HashEntry<K,V>[] tab = table; 
+             // 把散列值与 table 数组长度减 1 的值相“与”，
+  // 得到散列值对应的 table 数组的下标
+             // 然后返回 table 数组中此下标对应的 HashEntry 元素
+             return tab[hash & (tab.length - 1)]; 
+         } 
+  }
+  ```
+
+  依次插入A、B、C三个HashEntry节点后，Segment的结构示意图：
+
+  ![](assets/Segment的结构示意图.jpg)
+
+  ConcurrentHashMap类：
+
+  ```java
+  public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V>, Serializable {
+
+  		/**
+  		 * 散列映射表的默认初始容量为 16，即初始默认为 16 个桶 在构造函数中没有指定这个参数时，使用本参数
+  		 */
+  		static final int DEFAULT_INITIAL_CAPACITY = 16;
+
+  		/**
+  		 * 散列映射表的默认装载因子为 0.75，该值是 table 中包含的 HashEntry 元素的个数与 table 数组长度的比值 当 table 中包含的
+  		 * HashEntry 元素的个数超过了 table 数组的长度与装载因子的乘积时， 将触发 再散列 在构造函数中没有指定这个参数时，使用本参数
+  		 */
+  		static final float DEFAULT_LOAD_FACTOR = 0.75f;
+
+  		/**
+  		 * 散列表的默认并发级别为 16。该值表示当前更新线程的估计数 在构造函数中没有指定这个参数时，使用本参数
+  		 */
+  		static final int DEFAULT_CONCURRENCY_LEVEL = 16;
+
+  		/**
+  		 * segments 的掩码值 key 的散列码的高位用来选择具体的 segment
+  		 */
+  		final int segmentMask;
+
+  		/**
+  		 * 偏移量
+  		 */
+  		final int segmentShift;
+
+  		/**
+  		 * 由 Segment 对象组成的数组
+  		 */
+  		final Segment<K, V>[] segments;
+
+  		/**
+  		 * 创建一个带有指定初始容量、加载因子和并发级别的新的空映射。
+  		 */
+  		public ConcurrentHashMap(int initialCapacity, float loadFactor, int concurrencyLevel) {
+  			if (!(loadFactor > 0) || initialCapacity < 0 || concurrencyLevel <= 0)
+  				throw new IllegalArgumentException();
+
+  			if (concurrencyLevel > MAX_SEGMENTS)
+  				concurrencyLevel = MAX_SEGMENTS;
+
+  			// 寻找最佳匹配参数（不小于给定参数的最接近的 2 次幂）
+  			int sshift = 0;
+  			int ssize = 1;
+  			while (ssize < concurrencyLevel) {
+  				++sshift;
+  				ssize <<= 1;
+  			}
+  			segmentShift = 32 - sshift; // 偏移量值
+  			segmentMask = ssize - 1; // 掩码值
+  			this.segments = Segment.newArray(ssize); // 创建数组
+
+  			if (initialCapacity > MAXIMUM_CAPACITY)
+  				initialCapacity = MAXIMUM_CAPACITY;
+  			int c = initialCapacity / ssize;
+  			if (c * ssize < initialCapacity)
+  				++c;
+  			int cap = 1;
+  			while (cap < c)
+  				cap <<= 1;
+
+  			// 依次遍历每个数组元素
+  			for (int i = 0; i < this.segments.length; ++i)
+  				// 初始化每个数组元素引用的 Segment 对象
+  				this.segments[i] = new Segment<K, V>(cap, loadFactor);
+  		}
+
+  		/**
+  		 * 创建一个带有默认初始容量 (16)、默认加载因子 (0.75) 和 默认并发级别 (16) 的空散列映射表。
+  		 */
+  		public ConcurrentHashMap() {
+  			// 使用三个默认参数，调用上面重载的构造函数来创建空散列映射表
+  			this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL);
+  		}
+
+  	}
+  ```
+
+  在这里，有三个非常重要的参数：**初始容量**、**负载因子** 和 **并发级别**，这三个参数是影响ConcurrentHashMap性能的重要参数。
+
+  从上述源码可以看出，ConcurrentHashMap也正是通过initialCapacity、loadFactor和concurrencyLevel这三个参数进行构造并初始化segments数组、段偏移量segmentShift、段掩码segmentMask和每个segment的。
+
+  ​
+
+  ```java
+  int sshift = 0;
+  int ssize = 1;
+  while (ssize < concurrencyLevel) {
+      ++sshift;
+      ssize <<= 1;
+  }
+  this.segmentShift = 32 - sshift;
+  this.segmentMask = ssize - 1;
+  this.segments = Segment.newArray(ssize);
+  ```
+
+  这段代码：
+
+  segmentShift（如需加入某元素，将它分配到某个segment需移动的位数）；
+
+  segmentMask（此掩码用于计算分配到哪个segment）
+
+  concurrencyLevel可以看为分多少个segment，即segment[]的长度，就是**大于或等于concurrencyLevel的最小的2的N次方**。这样的好处是是为了方便采用位运算来加速进行元素的定位。假如concurrencyLevel等于14，15或16，ssize都会等于16；
+
+  segmentMask这个掩码后面被用来跟hash值的高位做&操作，从而确定分配到哪个segment；
+
+  **sshift的大小，即是N次方的N**，每while循环一次，sshift就增加1，那么segmentShift的值就等于32减去n，而segmentMask就等于2的n次方减去1；
+
+  而segmentShift后面用来为hash值右移的位数，从而获取hash的高多少位来做&运算。
+
+  ```java
+  int c = initialCapacity / ssize;
+  if (c * ssize < initialCapacity)
+      ++c;
+  int cap = MIN_SEGMENT_TABLE_CAPACITY;
+  while (cap < c)
+      cap <<= 1;
+  ```
+
+  这段是求cap（segment中包含的table数组的大小），这个cap的大小是2的N次方。
+
+  ConcurrentHashMap结构示意图：
+
+  ![](assets/ConcurrentHashMap.jpg)
+
+  用分离锁实现多个线程之间的并发写操作：
+
+  Put方法的实现：
+
+  ```java
+  public V put(K key, V value) {
+  		Segment<K, V> s;
+  		
+  		//ConcurrentHashMap 中不允许用 null 作为映射值
+  		if (value == null)
+  			throw new NullPointerException();
+  		
+  		// 计算key的hash值：
+  		int hash = hash(key);
+  		
+  		// 将散列值右移 segmentShift 个位，并在高位填充 0 
+     		// 然后把得到的值与 segmentMask 相“与”
+  		// 从而得到 hash 值对应的 segments 数组的下标值
+  		int j = (hash >>> segmentShift) & segmentMask;
+  		
+  		// 使用CAS方式，从Segment[]中获取j角标下的Segment对象,并判断是否存在：
+  		if ((s = (Segment<K, V>) UNSAFE.getObject(segments, (j << SSHIFT) + SBASE)) == null)
+  			
+  			// 如果在Segment[]中的j角标处没有元素，则在j角标处新建元素---Segment对象；
+  			s = ensureSegment(j);
+  		
+  		// 底层使用Segment对象的put方法：
+  		return s.put(key, hash, value, false);
+  	}
+  ```
+
+  根据hash值向右无符号移segmentShift位，然后和segmentMask进行"与"操作就可以定位到特定的段。
+
+  在这里，假设Segment的数量(即segments数组的长度)是2的n次方(Segment的数量总是2的倍数，具体见构造函数的实现)，那么segmentShift的值就是32-n(hash值的位数是32)，而segmentMask的值就是2^n-1（写成二进制的形式就是n个1）。
+
+  进一步地，我们就可以得出以下结论：**根据key的hash值的高n位就可以确定元素到底在哪一个Segment中。**
+
+  在Segment中执行具体的put操作：
+
+  ```java
+  V put(K key, int hash, V value, boolean onlyIfAbsent) { 
+             lock();  // 加锁，这里是锁定某个 Segment 对象而非整个 ConcurrentHashMap 
+             try { 
+                 int c = count; 
+   
+                 if (c++ > threshold)     // 如果超过再散列的阈值
+                     rehash();              // 执行再散列，table 数组的长度将扩充一倍
+   
+                 HashEntry<K,V>[] tab = table; 
+                 // 把散列码值与 table 数组的长度减 1 的值相“与”
+                 // 得到该散列码对应的 table 数组的下标值
+                 int index = hash & (tab.length - 1); 
+                 // 找到散列码对应的具体的那个桶
+                 HashEntry<K,V> first = tab[index]; 
+   
+                 HashEntry<K,V> e = first; 
+                 while (e != null && (e.hash != hash || !key.equals(e.key))) 
+                     e = e.next; 
+   
+                 V oldValue; 
+                 if (e != null) {            // 如果键 / 值对以经存在
+                     oldValue = e.value; 
+                     if (!onlyIfAbsent) 
+                         e.value = value;    // 设置 value 值
+                 } 
+                 else {                        // 键 / 值对不存在 
+                     oldValue = null; 
+                     ++modCount;         // 要添加新节点到链表中，所以 modCont 要加 1  
+                     // 创建新节点，并添加到链表的头部 
+                     tab[index] = new HashEntry<K,V>(key, hash, first, value); 
+                     count = c;               // 写 count 变量
+                 } 
+                 return oldValue; 
+             } finally { 
+                 unlock();                     // 解锁
+             } 
+         }
+  ```
+
+  这里的加锁操作是针对（键的 hash 值对应的）某个具体的 Segment，锁定的是该 Segment 而不是整个 ConcurrentHashMap。因为插入键 / 值对操作只是在这个 Segment 包含的某个桶中完成，不需要锁定整个ConcurrentHashMap。
+
+  这样的好处就是，当我们进行插入操作时，只要插入的不是同一个Segment对象，那么并发线程就不需要进行等待操作，在保证安全的同时，又极大的提高了并发性能。
+
+  remove操作：
+
+  ```java
+  V remove(Object key, int hash, Object value) { 
+             lock();         // 加锁
+             try{ 
+                 int c = count - 1; 
+                 HashEntry<K,V>[] tab = table; 
+                 // 根据散列码找到 table 的下标值
+                 int index = hash & (tab.length - 1); 
+                 // 找到散列码对应的那个桶
+                 HashEntry<K,V> first = tab[index]; 
+                 HashEntry<K,V> e = first; 
+                 while(e != null&& (e.hash != hash || !key.equals(e.key))) 
+                     e = e.next; 
+   
+                 V oldValue = null; 
+                 if(e != null) { 
+                     V v = e.value; 
+                     if(value == null|| value.equals(v)) { // 找到要删除的节点
+                         oldValue = v; 
+                         ++modCount; 
+                         // 所有处于待删除节点之后的节点原样保留在链表中
+                         // 所有处于待删除节点之前的节点被克隆到新链表中
+                         HashEntry<K,V> newFirst = e.next;// 待删节点的后继结点
+                         for(HashEntry<K,V> p = first; p != e; p = p.next) 
+                             newFirst = new HashEntry<K,V>(p.key, p.hash, 
+                                                           newFirst, p.value); 
+                         // 把桶链接到新的头结点
+                         // 新的头结点是原链表中，删除节点之前的那个节点
+                         tab[index] = newFirst; 
+                         count = c;      // 写 count 变量
+                     } 
+                 } 
+                 return oldValue; 
+             } finally{ 
+                 unlock();               // 解锁
+             } 
+         }
+  ```
+
+  首先根据散列码找到具体的链表；
+
+  然后遍历这个链表找到要删除的节点；
+
+  最后把待删除节点之后的所有节点原样保留在新链表中，把待删除节点之前的每个节点克隆到新链表中。
+
+  假设写线程执行 remove 操作，要删除链表的 C 节点，另一个读线程同时正在遍历这个链表：
+
+  删除之前的原链表：
+
+  ![](assets/remove.jpg)
+
+  执行删除之后的新链表：
+
+  ![](assets/removeafter.jpg)
+
+  从上图可以看出，删除节点 C 之后的所有节点原样保留到新链表中；删除节点 C 之前的每个节点被克隆到新链表中，**注意：它们在新链表中的链接顺序被反转了。**因此，**在执行remove操作时，原始链表并没有被修改，也就是说，读线程不会受同时执行 remove 操作的并发写线程的干扰。**
+
+  Get操作：
+
+  ConcurrentHashMap 中，每个 Segment 都有一个变量 count。它用来统计 Segment 中的 HashEntry 的个数。这个变量被声明为 volatile。
+
+  ```java
+
+  ```
+
+  ```java
+  V get(Object key, int hash) { 
+             if(count != 0) {       // 首先读 count 变量
+                 HashEntry<K,V> e = getFirst(hash); 
+                 while(e != null) { 
+                     if(e.hash == hash && key.equals(e.key)) { 
+                         V v = e.value; 
+                         if(v != null)            
+                             return v; 
+                         // 如果读到 value 域为 null，说明发生了重排序，加锁后重新读取
+                         return readValueUnderLock(e); 
+                     } 
+                     e = e.next; 
+                 } 
+             } 
+             return null; 
+         }
+  ```
+
+  在获取操作中，获取Segment对象和HashEntry对象，使用了不同的计算规则，其目的主要为了避免散列后的值一样，尽可能将元素分散开来。
+
+  ```java
+  hash >>> segmentShift) & segmentMask　　 // 定位Segment所使用的hash算法
+  int index = hash & (tab.length - 1);　　 // 定位HashEntry所使用的hash算法
+  ```
+
+  ​
+
+  ConcurrentHashMap不同于HashMap，它既不允许key值为null，也不允许value值为null。但是，此处怎么会存在键值对存在且的Value值为null的情形呢？
+
+  JDK官方给出的解释是，这种情形发生的场景是：初始化HashEntry时发生的指令重排序导致的，也就是在HashEntry初始化完成之前便返回了它的引用。这时，JDK给出的解决之道就是加锁重读。
+
+  ```java
+  V readValueUnderLock(HashEntry<K,V> e) {
+              lock();
+              try {
+                  return e.value;
+              } finally {
+                  unlock();
+              }
+          }
+  ```
+
+  根据 Java 内存模型，对 同一个 volatile 变量的写 / 读操作可以确保：写线程写入的值，能够被之后未加锁的读线程“看到”。
+
+  总结：
+
+  ConcurrentHashMap读操作不需要加锁原因：
+
+  - **用HashEntery对象的不变性来降低读操作对加锁的需求；**
+  - **用Volatile变量协调读写线程间的内存可见性；**
+  - **若读时发生指令重排序现象，则加锁重读；**
+
+  size()方法：
+
+  想要知道整个ConcurrentHashMap中的元素数量，就必须统计Segment对象下HashEntry[]中元素的个数。在Segment对象中有一个count属性，它是负责记录Segment对象中到底有多少个HashEntry的。当调用put()时，每增加一个元素，都会对count进行一次++。
+
+  size方法主要思路是先在没有锁的情况下对所有段大小求和，这种求和策略最多执行RETRIES_BEFORE_LOCK次(默认是两次)：在没有达到RETRIES_BEFORE_LOCK之前，求和操作会不断尝试执行（这是因为遍历过程中可能有其它线程正在对已经遍历过的段进行结构性更新）；在超过RETRIES_BEFORE_LOCK之后，如果还不成功就在持有所有段锁的情况下再对所有段大小求和。
+
+  Segment包含一个modCount成员变量，在会引起段发生结构性改变的所有操作(put操作、 remove操作和clean操作)里，都会将变量modCount进行加1，因此，**JDK只需要在统计size前后比较modCount是否发生变化就可以得知容器的大小是否发生变化。**
+
+  ​
+
+  ```java
+  public int size() {
+          final Segment<K,V>[] segments = this.segments;
+          long sum = 0;
+          long check = 0;
+          int[] mc = new int[segments.length];
+          // Try a few times to get accurate count. On failure due to
+          // continuous async changes in table, resort to locking.
+          for (int k = 0; k < RETRIES_BEFORE_LOCK; ++k) {
+              check = 0;
+              sum = 0;
+              int mcsum = 0;
+              for (int i = 0; i < segments.length; ++i) {
+                  sum += segments[i].count;   
+                  mcsum += mc[i] = segments[i].modCount;  // 在统计size时记录modCount
+              }
+              if (mcsum != 0) {
+                  for (int i = 0; i < segments.length; ++i) {
+                      check += segments[i].count;
+                      if (mc[i] != segments[i].modCount) {  // 统计size后比较各段的modCount是否发生变化
+                          check = -1; // force retry
+                          break;
+                      }
+                  }
+              }
+              if (check == sum)// 如果统计size前后各段的modCount没变，且两次得到的总数一致，直接返回
+                  break;
+          }
+          if (check != sum) { // Resort to locking all segments  // 加锁统计
+              sum = 0;
+              for (int i = 0; i < segments.length; ++i)
+                  segments[i].lock();
+              for (int i = 0; i < segments.length; ++i)
+                  sum += segments[i].count;
+              for (int i = 0; i < segments.length; ++i)
+                  segments[i].unlock();
+          }
+          if (sum > Integer.MAX_VALUE)
+              return Integer.MAX_VALUE;
+          else
+              return (int)sum;
+      }
+  ```
+
+  rehash()操作：
+
+  在ConcurrentHashMap中使用put操作插入Key/Value对之前，首先会检查本次插入会不会导致Segment中节点数量超过阈值threshold，如果会，那么就先对Segment进行扩容和重哈希操作。**特别需要注意的是，ConcurrentHashMap的重哈希实际上是对ConcurrentHashMap的某个段的重哈希，因此ConcurrentHashMap的每个段所包含的桶位自然也就不尽相同。**
+
+  ```java
+  void rehash() {
+              HashEntry<K,V>[] oldTable = table;    // 扩容前的table
+              int oldCapacity = oldTable.length;
+              if (oldCapacity >= MAXIMUM_CAPACITY)   // 已经扩到最大容量，直接返回
+                  return;
+
+              // 新创建一个table，其容量是原来的2倍
+              HashEntry<K,V>[] newTable = HashEntry.newArray(oldCapacity<<1);   
+              threshold = (int)(newTable.length * loadFactor);   // 新的阈值
+              int sizeMask = newTable.length - 1;     // 用于定位桶
+              for (int i = 0; i < oldCapacity ; i++) {
+                  // We need to guarantee that any existing reads of old Map can
+                  //  proceed. So we cannot yet null out each bin.
+                  HashEntry<K,V> e = oldTable[i];  // 依次指向旧table中的每个桶的链表表头
+
+                  if (e != null) {    // 旧table的该桶中链表不为空
+                      HashEntry<K,V> next = e.next;
+                      int idx = e.hash & sizeMask;   // 重哈希已定位到新桶
+                      if (next == null)    //  旧table的该桶中只有一个节点
+                          newTable[idx] = e;
+                      else {    
+                          // Reuse trailing consecutive sequence at same slot
+                          HashEntry<K,V> lastRun = e;
+                          int lastIdx = idx;
+                          for (HashEntry<K,V> last = next;
+                               last != null;
+                               last = last.next) {
+                              int k = last.hash & sizeMask;
+                              // 寻找k值相同的子链，该子链尾节点与父链的尾节点必须是同一个
+                              if (k != lastIdx) {
+                                  lastIdx = k;
+                                  lastRun = last;
+                              }
+                          }
+
+                          // JDK直接将子链lastRun放到newTable[lastIdx]桶中
+                          newTable[lastIdx] = lastRun;
+
+                          // 对该子链之前的结点，JDK会挨个遍历并把它们复制到新桶中
+                          for (HashEntry<K,V> p = e; p != lastRun; p = p.next) {
+                              int k = p.hash & sizeMask;
+                              HashEntry<K,V> n = newTable[k];
+                              newTable[k] = new HashEntry<K,V>(p.key, p.hash,
+                                                               n, p.value);
+                          }
+                      }
+                  }
+              }
+              table = newTable;   // 扩容完成
+          }
+
+  ```
+
+  **由于扩容是按照2的幂次方进行的，所以扩展前在同一个桶中的元素，现在要么还是在原来的序号的桶里，或者就是原来的序号再加上一个2的幂次方，就这两种选择。**
+
+  ​
