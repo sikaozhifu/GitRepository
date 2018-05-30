@@ -1059,7 +1059,11 @@
 
   JDK6、7、8分别对ConcurrentHashMap的实现方式：
 
-  [ConcurrentHashMap总结](https://my.oschina.net/hosee/blog/675884)"                                                                        ConcurrentHashMap总结"
+  [ConcurrentHashMap总结](https://my.oschina.net/hosee/blog/675884)
+
+  [JDK8初始化临界值的具体实现](https://blog.csdn.net/lw_zj_ywn/article/details/78282905)
+
+  ​
 
   ​
 
