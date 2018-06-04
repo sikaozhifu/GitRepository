@@ -259,7 +259,7 @@
       { 
           Object k; 
           // 找到指定 key 与需要放入的 key 相等（hash 值相同
-          // 通过 equals 比较放回 true）
+          // 通过 equals 比较返回 true）
           if (e.hash == hash && ((k = e.key) == key 
               || key.equals(k))) 
           { 
@@ -362,7 +362,7 @@
       for (Entry<K,V> e = table[indexFor(hash, table.length)]; 
           e != null; 
           // 搜索该 Entry 链的下一个 Entr 
-          e = e.next)         // ①
+          e = e.next;         // ①
       { 
           Object k; 
           // 如果该 Entry 的 key 与被搜索 key 相同
