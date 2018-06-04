@@ -599,7 +599,7 @@
          HashEntry<K,V> getFirst(int hash) { 
              HashEntry<K,V>[] tab = table; 
              // 把散列值与 table 数组长度减 1 的值相“与”，
-  // 得到散列值对应的 table 数组的下标
+  		  // 得到散列值对应的 table 数组的下标
              // 然后返回 table 数组中此下标对应的 HashEntry 元素
              return tab[hash & (tab.length - 1)]; 
          } 
