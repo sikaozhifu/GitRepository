@@ -107,10 +107,10 @@
 
   Entry对象唯一表示一个键值对，有四个属性：
 
-  -K key 键对象
-  -V value 值对象
-  -int hash 键对象的hash值
-  -Entry entry 指向链表中下一个Entry对象，可为null，表示当前Entry对象在链表尾部
+   * -K key 键对象
+   * -V value 值对象
+   * -int hash 键对象的hash值
+   * -Entry entry 指向链表中下一个Entry对象，可为null，表示当前Entry对象在链表尾部
 
   初始容量大小和每次扩充容量大小的不同：
 
