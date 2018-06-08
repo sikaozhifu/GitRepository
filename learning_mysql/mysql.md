@@ -178,4 +178,18 @@
 
   所使用的Hash函数决定着索引键的大小
 
-  ​
+* 索引创建：
+
+   ```mysql
+   REATE [UNIQUE|CLUSTERED] INDEX INDEX_NAME ON TABLE_NAME(PROPERTY_NAME);
+   ```
+
+   其中UNIQUE和CLUSTERED为可选项，分别是建立唯一索引和聚簇索引，具体解释为：
+
+   UNIQUE:表示此索引的每一个索引值只对应唯一的数据。
+
+   CLUSTERED:表示要建立的索引是聚簇索引，即索引项的顺序与表中记录的物理顺序一致的索引组织。
+
+   ​
+
+​
