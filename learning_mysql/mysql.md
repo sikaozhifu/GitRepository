@@ -190,6 +190,10 @@
 
    CLUSTERED:表示要建立的索引是聚簇索引，即索引项的顺序与表中记录的物理顺序一致的索引组织。
 
+* 索引失效：
+
+   [避免索引失效](https://blog.csdn.net/wangbo1998/article/details/79580805)
+
    ​
 
 ​
