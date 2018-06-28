@@ -298,7 +298,43 @@
 
 * 规则：如果要用到变量，使用$，如果操作变量，不适用美元符。但是在使用printenv显示某个变量的值时候要在变量前面加上美元符。
 
-* ​
+* 安装软件程序（基于Debain的系统）
+
+  dpkg命令是基于Debain系PMS工具的核心
+
+  * apt -get
+
+  * apt -cache
+
+  * aptitude    完整的软件包管理系统
+
+  * aptitude    进入aptitude的全屏模式
+
+    ![1530190746847](assets/1530190746847.png)
+
+  * aptitude show mysql-client    显示某个特定包的详细信息
+
+    ![1530190793418](assets/1530190793418.png)
+
+  * dpkg -L vim-common    跟某个特定软件包相关的所有文件的列表
+
+    ![1530190813250](assets/1530190813250.png)
+
+  * aptitude search wine    查看系统是否已经安装了此包（i表示已经安装上了，p或v说明这包可用，但还没有安装）
+
+    ![1530190837819](assets/1530190837819.png)
+
+  * sudo aptitude install wine
+
+    ![1530190868622](assets/1530190868622.png)
+
+  * aptitude safe-upgrade    更新软件
+
+  * sudo aptitude purge wine    卸载软件
+
+    ![1530191069095](assets/1530191069095.png)
+
+  * ​
 
 在使用linux时，经常需要进行文件查找。其中查找的命令主要有find和grep。
 
