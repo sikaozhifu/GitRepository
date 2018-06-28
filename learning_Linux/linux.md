@@ -334,7 +334,24 @@
 
     ![1530191069095](assets/1530191069095.png)
 
-  * ​
+* 安装软件程序（基于Red Hat的系统）
+
+  都是基于rpm命令行工具
+
+  * yum
+  * urpm
+  * zypper
+  * yum list installed    列出系统上已经安装的包
+  * yum list xterm    查看某个特定安装包的详细信息
+  * yum list install xterm 安装包
+  * yum provides file_name    找到系统上某个文件属于哪个软件包
+  * yum install package_name    安装软件
+  * yum localinstall package_name.rpm    本地安装
+  * yum list updates    列出需要更新的软件
+  * yum update package_name    更新软件
+  * yum update    更新所有软件
+  * yum remove packa_name    只删除软件包而保留配置文件和数据文件
+  * yum erase package_name    删除软件和它所有的文件
 
 在使用linux时，经常需要进行文件查找。其中查找的命令主要有find和grep。
 
