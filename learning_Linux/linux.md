@@ -428,7 +428,157 @@
 
   p：粘贴文本
 
-  ​
+  y：复制文本，y代表（yank）。yw代表复制一个单词，y$代表复制到行尾
+
+  ###### 查找和替换：
+
+    :s/old/new/g ：一行命令替换所有 old 。
+    :n,ms/old/new/g ：替换行号 n 和 m 之间所有 old 。
+    :%s/old/new/g ：替换整个文件中的所有 old 。
+    :%s/old/new/gc ：替换整个文件中的所有 old ，但在每次出现时提示。
+
+* shell脚本编程
+
+  ```shell
+  #! /bin/bash
+  #脚本第一行需要写上此格式
+  ```
+
+  echo    用于交互
+
+  将命令输出赋给变量：
+
+  * ```shell
+    #反引号字符（`）
+    testing=`date`
+    ```
+
+  * ```shell
+    #$()格式
+    testing=$(date)
+    ```
+
+  重定向输入输出：
+
+  * command > outputfile    将命令发送到一个文件中
+
+  * command >> outputfile    将命令的输出追加到已有文件中
+
+  * command < inputfile    将文件的内容重定向到命令
+
+  * command << inputfile    无需使用文件进行重定向，只需要在命令行中指定用于输入重定向的数据就可以了。除了<<符号，须指定一个文本标记来划分输入数据的开始和结尾。任何字符串都可作为文本标记，但在数据的开始和结尾文本标记必须一致。
+
+    **记忆：在命令行上，命令总是在左侧，而重定向符号“指向”数据流动的方向**
+
+  管道：command1 | command2    将一个命令的输出作为另一个命令的输入
+
+  expr    执行数学运算
+
+  * 数学运算    对于那些容易被shell错误解释的字符：
+
+    1、用转义字符（\）标出。例：expr 5 \ * 2。
+
+    2、使用美元符和方括号（$[poperation]）将数学表达式围起来
+
+    内建的bash计算器可以解决浮点计算问题，例：
+
+    ```bash
+    $ bc -q
+    var1=10
+    var1*4
+    40
+    var2=var1 / 5
+    print var2
+    2
+    quit
+    $
+    ```
+
+    将所有bash计算器涉及的部分都放到同一个脚本文件的不同行：
+
+    ```shell
+    #!/bin/bash
+    var1=10.46
+    var2=43.67
+    var3=33.2
+    var4=71
+    var5=$(bc << EOF
+    scale = 4
+    a1 = ( $var1 * $var2)
+    b1 = ($var3 * $var4)
+    a1 + b1
+    EOF
+    )
+    echo The final answer for this mess is $var5
+    ```
+
+    退出脚本：
+
+    * 查看退出状态码
+
+      ![1530773672274](assets/1530773672274.png)
+
+    * exit命令：允许在脚本结束的时候指定一个状态码
+
+  * 逻辑运算
+
+  * 比较运算
+
+  * 字符串运算
+
+  结构化命令：
+
+  * if-then语句
+
+    ```shell
+    if command
+    then
+    	commands
+    fi
+    ```
+
+  * if-then-else语句
+
+    ```shell
+    if command
+    then
+       commands
+    else
+       commands
+    fi
+    ```
+
+  * 嵌套if
+
+  * 使用else的另一种形式：elif
+
+    ```shell
+    if command1
+    then
+    	commands
+    elif command2
+    then
+    	more commands
+    fi
+    ```
+
+  * test命令：
+
+    test condition
+
+    如果 test 命令中列出的条件成立，test 命令就会退出并返回退出状态码 0；如果条件不成立， test 命令就会退出并返回非零的退出状态码，这使得
+    if-then 语句不会再被执行。
+
+    bash shell提供了另一种测试方法：
+
+    ```shell
+    if [condition]
+    then
+    	commands
+    fi
+    ```
+
+    ​
 
 在使用linux时，经常需要进行文件查找。其中查找的命令主要有find和grep。
 
