@@ -688,13 +688,49 @@
     done
     ```
 
-    whlie命令：
+    whlie命令：用方括号来检查循环命令中用到的shell变量的值
 
     ```shell
     #! /bin/bash
     # while command test
-
+    var1=10
+    while [ $var1 -gt 0 ]
+    do
+    	echo $var1
+    	var1=$[ $var1 - 1 ]
+    done
     ```
+
+    until命令：和while工作的方式完全相反，一旦测试命令返回了退出状态码0，循环就结束了。
+
+    ```shell
+    #!/bin/bash
+    # using the until command
+    var1=100
+    until [ $var1 -eq 0 ]
+    do
+    	echo $var1
+    	var1=$[ $var1 - 25 ]
+    done
+    ```
+
+    控制循环：
+
+    break命令；
+
+    ​	1、跳出单个循环
+
+    ​	2、跳出内部循环
+
+    ​	3、跳出外部循环    break n，其中n指定了要跳出的循环层级
+
+    continue命令；
+
+    ​	1、提前终止某次循环中的命令
+
+    ​	2、允许通过命令行参数指定要继续执行哪一级循环。continue n
+
+    处理用户输入：
 
     ​
 
