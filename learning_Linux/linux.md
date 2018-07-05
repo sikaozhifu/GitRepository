@@ -578,6 +578,124 @@
     fi
     ```
 
+    test命令可以判断三类条件：
+
+    1、数值比较：
+
+    ![1530774488531](assets/1530774488531.png)
+
+    2、字符串比较：
+
+    ![1530774532431](assets/1530774532431.png)
+
+    ​	字符串顺序：
+
+    ​	大于号和小于号必须转义，否则shell会把它们当作重定向符号，把字符串值当作文件名
+
+    ​	大于和小于顺序和sort命令所采用的不同
+
+    3、文件比较：
+
+    ![1530774608688](assets/1530774608688.png)
+
+    复合条件测试：
+
+      [ condition1 ] && [ condition2 ]    AND布尔运算符
+      [ condition1 ] || [ condition2 ]    OR布尔运算符
+
+    if-then的高级特性：
+
+    1、用于数学表达式的双括号(( expression ))
+
+    ![1530775471564](assets/1530775471564.png)
+
+    2、用于高级字符串处理功能的双方括号[[ expression ]]
+
+    ​	另一个特性——模式匹配，可以定义正则表达式
+
+    case命令：将指定的变量与不同模式进行比较
+
+    ```shell
+    case variable in
+    pattern1 | pattern2) command1;;
+    pattern3) commands2;;
+    *) default commands;;
+    esac
+    ```
+
+    for命令：
+
+    从列表中读取值：
+
+    ```shell
+    for var in list
+    do
+    	commands
+    done
+    ```
+
+    从命令中读取值：
+
+    ```shell
+    #!/bin/bash
+    # reading values from a file
+    file="states"
+    for state in $(cat $file)
+    do
+    	echo "Visit beautiful $state"
+    done
+
+    ```
+
+    字段分隔符：默认情况下bash shell会将空格、制表符、换行符
+
+    通常用法：
+
+    IFS.OLD=$IFS
+
+    IFS=$'\n':;"
+
+     <在代码中使用新的IFS值>
+
+    IFS=$IFS.OLD
+
+    用通配符读取命令：
+
+    ```shell
+    #!/bin/bash
+    # iterate through all the files in a directory
+    for file in /home/guan/Desktop/test_dir/*
+    do
+     	if [ -d "$file" ]
+     	then
+     		echo "$file is a directory"
+     	elif [ -f "$file" ]
+     	then
+     		echo "$file is a file"
+     fi
+    done
+    ```
+
+    C语言风格的for命令：
+
+    ```shell
+    #! /bin/bash
+    #testing the C-style for loop
+
+    for (( a=1,b=10; a <= 10; a++, b-- ))
+    do
+    	echo "$a - $b"
+    done
+    ```
+
+    whlie命令：
+
+    ```shell
+    #! /bin/bash
+    # while command test
+
+    ```
+
     ​
 
 在使用linux时，经常需要进行文件查找。其中查找的命令主要有find和grep。
