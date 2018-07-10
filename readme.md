@@ -7,3 +7,11 @@ Creating a new branch is quick and simple.
 Creating a new branch is quick and simple and merge.
 git stash
 
+git add
+
+git commit
+
+git push
+
+
+
