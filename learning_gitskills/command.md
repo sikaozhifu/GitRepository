@@ -72,3 +72,15 @@ git pull --rebase origin master
 git push -u origin master
 
 即可完成代码上传到github
+
+查看用户名和邮箱地址：
+
+$ git config user.name
+
+$ git config user.email
+
+修改用户名和邮箱地址：
+
+$ git config --global user.name "username"
+
+$ git config --global user.email "email"
