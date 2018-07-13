@@ -86,3 +86,24 @@ $ git config --global user.name "username"
 $ git config --global user.email "email"
 
 重新设置本机git配置：`git config --global credential.helper store` 
+
+git pull 的时候出现如下错误 ：
+
+```bas
+error: RPC failed; curl 56 OpenSSL SSL_read: SSL_ERROR_SYSCALL, errfno 10054
+fatal: The remote end hung up unexpectedly
+fatal: early EOF
+fatal: unpack-objects failed
+```
+
+进行如下设置后再次执行pull命令即可 :
+
+```b
+git config http.postBuffer 524288000
+```
+
+这里命令设置了通信缓存大小，之前发生错误是因为同步数据过大导致。
+
+一篇很好的博客：
+
+#### [上传项目到 GitHub：如何用同一个 github 帐号在两台电脑上同步开发？/ 如何协同开发？](https://blog.csdn.net/zeqiao/article/details/75124532)
