@@ -1,5 +1,7 @@
 ### 正则表达式
 
+推荐：[正则表达式30分钟入门教](https://www.cnblogs.com/deerchao/archive/2006/08/24/zhengzhe30fengzhongjiaocheng.html)
+
 正则表达式（Regular Expression，在代码中常简写为regex、regexp或RE）
 
 使用单个字符来描述、匹配一系列符合某个句法规则的字符串。用常用来检索、替换哪些符合某个模式的文本。
