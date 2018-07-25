@@ -1,6 +1,6 @@
 ### 正则表达式
 
-推荐：[正则表达式30分钟入门教](https://www.cnblogs.com/deerchao/archive/2006/08/24/zhengzhe30fengzhongjiaocheng.html)
+推荐：[正则表达式30分钟入门教程](https://www.cnblogs.com/deerchao/archive/2006/08/24/zhengzhe30fengzhongjiaocheng.html)
 
 正则表达式（Regular Expression，在代码中常简写为regex、regexp或RE）
 
