@@ -107,3 +107,22 @@ git config http.postBuffer 524288000
 一篇很好的博客：
 
 #### [上传项目到 GitHub：如何用同一个 github 帐号在两台电脑上同步开发？/ 如何协同开发？](https://blog.csdn.net/zeqiao/article/details/75124532)
+
+如果想保留刚才本地修改的代码，并把git服务器上的代码pull到本地（本地刚才修改的代码将会被暂时封存起来）
+
+```bash
+git stash
+git pull origin master
+git stash pop
+```
+
+如此一来，服务器上的代码更新到了本地，而且本地修改的代码也没有被覆盖，之后使用add，commit，push 命令即可更新本地代码到服务器了。 
+
+如果想完全地覆盖本地的代码，只保留服务器端代码，则直接回退到上一个版本，再进行pull： 
+
+```bash
+git reset --hard
+git pull origin master
+```
+
+其中origin master表示git的主分支。 
