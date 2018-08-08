@@ -67,3 +67,4 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
             4. getMetaData():获取包含有关ResultSet对象列信息的ResultSetMetaData对象，ResultSet对象将在此执行PreparedStatement对象时返回。
             5. getParameterMetaData():获取此PreparedStatement对象的参数的编号、类型和属性。
             6. setAsciiStream(int parameterIndex, InputStream x, int longth):将指定参数设置为给定输入流，该输入流将具有给定字节数。
+
