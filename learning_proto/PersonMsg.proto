@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "com.test";//生成的包名
+option java_outer_classname = "PersonModel";//生成的类名
+
+message Person {
+    int32 id = 1;
+    string name = 2;
+    string email = 3;
+    //string password = 4;
+}
