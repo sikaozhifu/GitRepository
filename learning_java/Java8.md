@@ -26,3 +26,52 @@
   + 形参列表的数据类型会自动推断，只要参数名称
   + 和匿名内部类一样，如果访问局部变量，要求局部变量必须是final的
 
+```java
+package com.test.lambda;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+public class TestLambda {
+    public static void main(String[] args) {
+        String[] atp = {"Rafael Nadal", "Novak Djokovic",
+                "Stanislas Wawrinka",
+                "David Ferrer","Roger Federer",
+                "Andy Murray","Tomas Berdych",
+                "Juan Martin Del Potro"};
+        List<String> list = Arrays.asList(atp);
+        //before
+        for (String player : list) {
+            System.out.println(player + "; ");
+        }
+        System.out.println("----------------");
+        //lambda
+        list.forEach((player) -> System.out.println(player + ";"));
+        // 在 Java 8 中使用双冒号操作符(double colon operator)
+        //list.forEach(System.out::println);
+        System.out.println("--------------------------");
+        //排序
+        Arrays.sort(atp, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return (s1.compareTo(s2));
+            }
+        });
+        for (int i = 0; i < atp.length; i++) {
+            System.out.println(atp[i]);
+        }
+        System.out.println("--------------------------");
+        //使用Lambda表达式
+        Comparator<String> sortByName = (String s1,String s2) -> (s1.compareTo(s2));
+        Arrays.sort(atp,sortByName);
+        for (int i = 0; i < atp.length; i++) {
+            System.out.println(atp[i]);
+        }
+    }
+}
+
+```
+
+
+
