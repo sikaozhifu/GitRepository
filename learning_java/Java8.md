@@ -75,6 +75,10 @@ public class TestLambda {
 
 #### Stream的特性：
 
+[stream介绍，以及lambda表达式的使用](https://blog.csdn.net/lidai352710967/article/details/82496783)
+
+[collection.stream()以及collect()方法](https://blog.csdn.net/lidai352710967/article/details/81461119)
+
 一个Stream只可以使用一次。
 
 1. 不是数据结构；
