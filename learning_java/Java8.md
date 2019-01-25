@@ -73,5 +73,53 @@ public class TestLambda {
 
 ```
 
+#### Stream的特性：
 
+一个Stream只可以使用一次。
+
+1. 不是数据结构；
+2. 没有内存，只是用操作管道从source（数据结构、数组、generator function、IO channel）抓取数据；
+3. 绝不修改自己所封装的底层数据结构的数据。例如Stream的filter操作会产生一个不包含被过滤的新Stream，而不是从source删除那些元素；
+4. 所有Stream的操作必须以lambda表达式为参数；
+5. 很容易生成数组或者list；
+6. 不支持索引访问；
+7. 惰性化；
+8. 并行能力；
+9. 可以是无限的；
+
+实例：
+
+```java
+package com.test.stream;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class StreamTest {
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
+        }
+        for (Integer integer : list) {
+            System.out.print(integer + " ");
+        }
+        System.out.println("\n-----------------------");
+        List<Integer> SquareList = list.stream().map(n -> n * n).collect(Collectors.toList());
+        for (Integer integer : SquareList) {
+            System.out.print(integer + " ");
+        }
+    }
+}
+
+```
+
+结果：
+
+```java
+0 1 2 3 4 5 6 7 8 9 
+-----------------------
+0 1 4 9 16 25 36 49 64 81 
+```
 
